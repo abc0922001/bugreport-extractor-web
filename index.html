@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Android Bugreport 輕量萃取工具 | for Gemini</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="badge">100% 瀏覽器本機端執行 · 零資料上傳</div>
+      <h1>Android Bugreport 輕量萃取工具</h1>
+      <p class="subtitle">將 150MB+ 巨型 Bugreport 日誌秒速萃取為 ~3MB 精華，完美相容 Gemini 上下文限制</p>
+    </header>
+
+    <main class="main-card">
+      <!-- 初始上傳區域 -->
+      <section id="dropZone" class="drop-zone">
+        <input type="file" id="fileInput" accept=".txt" style="display: none;">
+        <div class="drop-zone-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+        </div>
+        <div class="drop-zone-title">點擊選擇 或 拖曳 Bugreport 日誌檔至此</div>
+        <p class="drop-zone-hint">支援 <code>bugreport-*.txt</code> 大型文字檔（100MB ~ 500MB+）</p>
+      </section>
+
+      <!-- 檔案確認狀態卡片（嚴格不顯示內容，僅顯示檔名與大小） -->
+      <section id="fileInfoCard" class="file-info-card hidden">
+        <div class="file-meta">
+          <div class="file-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </div>
+          <div class="file-details">
+            <div class="file-name" id="fileNameDisplay">bugreport-xxx.txt</div>
+            <div class="file-size" id="fileSizeDisplay">計算中...</div>
+          </div>
+        </div>
+        <button id="startProcessBtn" class="btn btn-primary">開始萃取精華</button>
+      </section>
+
+      <!-- 處理中進度條 -->
+      <section id="processingCard" class="processing-card hidden">
+        <div class="spinner-container">
+          <div class="spinner"></div>
+          <div class="processing-status-text" id="statusText">正在高速串流過濾核心服務...</div>
+        </div>
+        <div class="progress-bar-wrapper">
+          <div class="progress-bar-fill" id="progressBar" style="width: 0%;"></div>
+        </div>
+        <div class="progress-meta">
+          <span id="progressPercent">0%</span>
+          <span id="progressBytes">0 MB / 0 MB</span>
+        </div>
+      </section>
+
+      <!-- 處理完成狀態（僅顯示處理成功與下載按鈕） -->
+      <section id="resultCard" class="result-card hidden">
+        <div class="success-icon">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <h2 class="success-title">處理成功！</h2>
+        <p class="success-desc">已成功萃取所有核心效能、記憶體、溫控與崩潰指標</p>
+
+        <div class="summary-chips">
+          <div class="chip">
+            <span class="chip-label">原始檔案</span>
+            <span class="chip-value" id="origSizeSummary">-</span>
+          </div>
+          <div class="chip highlight">
+            <span class="chip-label">萃取後大小</span>
+            <span class="chip-value" id="dumpSizeSummary">-</span>
+          </div>
+          <div class="chip">
+            <span class="chip-label">體積縮減</span>
+            <span class="chip-value" id="compressionSummary">-</span>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <a id="downloadBtn" class="btn btn-success" download="gemini_perf_dump.txt">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            下載 gemini_perf_dump.txt
+          </a>
+          <button id="resetBtn" class="btn btn-secondary">處理其他檔案</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- 下游使用指引 -->
+    <footer class="app-footer">
+      <div class="footer-tip">
+        <strong>💡 下一步：</strong>直接將下載的 <code>gemini_perf_dump.txt</code> 搭配 <code>dumpstate_board.txt</code> 與 <code>FS/data/anr/</code> 檔案拖入 Gemini 聊天介面，即可取得完整效能診斷與優化計畫。
+      </div>
+      <div class="footer-note">
+        本工具使用 HTML5 File Streams API 於瀏覽器沙盒即時處理，日誌內容不會離開您的裝置。
+      </div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
