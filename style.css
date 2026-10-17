@@ -404,11 +404,207 @@ body {
   display: none !important;
 }
 
-@media (max-width: 480px) {
-  .main-card {
+/* 提示詞區塊卡片 */
+.prompts-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.prompts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.prompts-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.prompts-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.prompts-subtitle {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+/* 提示詞分頁標籤 */
+.prompt-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 6px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--card-border);
+}
+
+.prompt-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-sans);
+  text-align: center;
+}
+
+.prompt-tab:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-main);
+}
+
+.prompt-tab.active {
+  background: rgba(59, 130, 246, 0.14);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(59, 130, 246, 0.15);
+}
+
+.tab-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+.prompt-tab.active .tab-badge {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.tab-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+/* 提示詞內容面板 */
+.prompt-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.prompt-files-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.025);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--card-border);
+}
+
+.files-bar-label {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.prompt-files-bar code {
+  font-family: var(--font-mono);
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.76rem;
+}
+
+.prompt-box-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.prompt-text {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.65;
+  color: #e2e8f0;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  user-select: all;
+}
+
+.btn-copy {
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  color: #ffffff;
+  background: var(--primary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 10px var(--primary-glow);
+}
+
+.btn-copy:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn-copy.copied {
+  background: var(--success);
+  box-shadow: 0 2px 10px var(--success-glow);
+}
+
+@media (max-width: 540px) {
+  .main-card, .prompts-card {
     padding: 20px;
   }
   .summary-chips {
     flex-direction: column;
+  }
+  .prompt-tabs {
+    grid-template-columns: 1fr;
+  }
+  .prompt-tab {
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+  .btn-copy {
+    width: 100%;
   }
 }

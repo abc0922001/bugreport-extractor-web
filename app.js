@@ -103,6 +103,99 @@ document.addEventListener('DOMContentLoaded', () => {
     dropZone.classList.remove('hidden');
   });
 
+  // 提示詞分頁切換與一鍵複製功能
+  const promptTabs = document.querySelectorAll('.prompt-tab');
+  const promptPanels = document.querySelectorAll('.prompt-panel');
+
+  promptTabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => {
+      const targetId = tab.getAttribute('data-prompt-target');
+
+      promptTabs.forEach(t => {
+        const isSelected = t === tab;
+        t.classList.toggle('active', isSelected);
+        t.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+      });
+
+      promptPanels.forEach(panel => {
+        if (panel.id === targetId) {
+          panel.classList.remove('hidden');
+          panel.classList.add('active');
+        } else {
+          panel.classList.add('hidden');
+          panel.classList.remove('active');
+        }
+      });
+    });
+
+    tab.addEventListener('keydown', (e) => {
+      let nextIndex = null;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        nextIndex = (index + 1) % promptTabs.length;
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        nextIndex = (index - 1 + promptTabs.length) % promptTabs.length;
+      }
+      if (nextIndex !== null) {
+        e.preventDefault();
+        promptTabs[nextIndex].focus();
+        promptTabs[nextIndex].click();
+      }
+    });
+  });
+
+  // 複製提示詞至剪貼簿（支援 Clipboard API 與 file:// 離線 Fallback）
+  async function copyTextToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return;
+      } catch (_) {
+        // 若於 file:// 等環境遭拒，降級至 textarea execCommand('copy')
+      }
+    }
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-9999px';
+    textArea.style.top = '0';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      const successful = document.execCommand('copy');
+      if (!successful) throw new Error('execCommand copy failed');
+    } finally {
+      document.body.removeChild(textArea);
+    }
+  }
+
+  const copyButtons = document.querySelectorAll('.btn-copy');
+  copyButtons.forEach(btn => {
+    let copyTimeout = null;
+    btn.addEventListener('click', async () => {
+      const targetId = btn.getAttribute('data-copy-target');
+      const promptEl = document.getElementById(targetId);
+      if (!promptEl) return;
+
+      const textToCopy = promptEl.textContent.trim();
+      const btnTextEl = btn.querySelector('.copy-btn-text');
+
+      try {
+        await copyTextToClipboard(textToCopy);
+        btn.classList.add('copied');
+        if (btnTextEl) btnTextEl.textContent = '已複製！';
+
+        if (copyTimeout) clearTimeout(copyTimeout);
+        copyTimeout = setTimeout(() => {
+          btn.classList.remove('copied');
+          if (btnTextEl) btnTextEl.textContent = '複製提示詞';
+        }, 2000);
+      } catch (err) {
+        alert('複製失敗，請手動全選文字進行複製。');
+      }
+    });
+  });
+
   /**
    * 核心串流萃取邏輯
    * 採用 4MB 分塊切片 (file.slice) + FileReader 循序處理

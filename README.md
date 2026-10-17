@@ -101,14 +101,29 @@ git push -u origin main
 
 1. 在本網頁中上傳 `bugreport-*.txt`，點擊「開始萃取精華」，下載產出的 **`gemini_perf_dump.txt`**。
 2. 開啟 **[Gemini (gemini.google.com)](https://gemini.google.com/)** 聊天視窗。
-3. 同時拖入以下 3 個輕量檔案：
-   - 📄 **`gemini_perf_dump.txt`**（由本工具產出，約 3MB）
-   - 📄 **`dumpstate_board.txt`**（Bugreport 資料夾內原有檔案，約 1.8MB）
-   - 📄 **`FS/data/anr/anr_*`**（Bugreport 資料夾內的當機堆疊追蹤檔，若有）
-4. 在 Gemini 聊天框貼上以下 Prompt：
-   ```text
-   請根據上傳的 Android Bugreport 核心日誌（gemini_perf_dump.txt、dumpstate_board.txt 與 ANR 追蹤檔），為我進行深度的整機系統效能診斷與流暢度排查：
-   1. 列出「核心數據指標儀表板」（無障礙服務、輸入延遲、CPU負載、記憶體/ZRAM飽和度、核心溫度與溫控降頻狀態、掉幀率等）。
-   2. 深入剖析導致手機卡頓、掉幀或耗電的核心病灶（需包含底層機制原理、日誌數據實證與使用者體感影響）。
-   3. 產出分級的 ADB 無 Root 優化執行計畫（包含 AOT 編譯、待機分組管制、非必要組件停用與一鍵復原指令）。
-   ```
+3. 依您手邊的檔案組合，在網頁下方的 **「📋 Gemini 診斷提示詞（一鍵複製）」** 區塊切換對應分頁並點擊複製：
+
+### 方案 A：完整版（`gemini_perf_dump.txt` 搭配 `dumpstate_board.txt` 與 `FS/data/anr/`）
+```text
+請根據上傳的 Android Bugreport 核心日誌（gemini_perf_dump.txt、dumpstate_board.txt 與 FS/data/anr/ 追蹤檔），為我進行深度的整機系統效能診斷與流暢度排查：
+1. 列出「核心數據指標儀表板」（無障礙服務、輸入延遲、CPU負載、記憶體/ZRAM飽和度、核心溫度與溫控降頻狀態、掉幀率、ANR 阻塞點等）。
+2. 深入剖析導致手機卡頓、掉幀、無回應（ANR）或耗電的核心病灶（需結合底層硬體板級狀態、ANR 執行緒堆疊追蹤、系統機制原理、日誌數據實證與使用者體感影響）。
+3. 產出分級的 ADB 無 Root 優化執行計畫（包含 AOT 編譯、待機分組管制、非必要組件停用與一鍵復原指令）。
+```
+
+### 方案 B：進階版（`gemini_perf_dump.txt` 搭配 `dumpstate_board.txt`）
+```text
+請根據上傳的 Android Bugreport 核心日誌（gemini_perf_dump.txt 與 dumpstate_board.txt），為我進行深度的整機系統效能診斷與流暢度排查：
+1. 列出「核心數據指標儀表板」（無障礙服務、輸入延遲、CPU負載、記憶體/ZRAM飽和度、核心溫度與溫控降頻狀態、板級硬體功耗與掉幀率等）。
+2. 深入剖析導致手機卡頓、掉幀或耗電的核心病灶（需結合系統服務與板級硬體狀態、底層機制原理、日誌數據實證與使用者體感影響）。
+3. 產出分級的 ADB 無 Root 優化執行計畫（包含 AOT 編譯、待機分組管制、非必要組件停用與一鍵復原指令）。
+```
+
+### 方案 C：標準版（僅 `gemini_perf_dump.txt`）
+```text
+請根據上傳的 Android Bugreport 核心日誌（gemini_perf_dump.txt），為我進行深度的整機系統效能診斷與流暢度排查：
+1. 列出「核心數據指標儀表板」（無障礙服務、輸入延遲、CPU負載、記憶體/ZRAM飽和度、核心溫度與溫控降頻狀態、掉幀率等）。
+2. 深入剖析導致手機卡頓、掉幀或耗電的核心病灶（需包含底層機制原理、日誌數據實證與使用者體感影響）。
+3. 產出分級的 ADB 無 Root 優化執行計畫（包含 AOT 編譯、待機分組管制、非必要組件停用與一鍵復原指令）。
+```
+

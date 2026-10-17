@@ -107,10 +107,104 @@
       </section>
     </main>
 
+    <!-- Gemini 診斷提示詞區塊 -->
+    <section class="prompts-card" aria-label="Gemini 診斷提示詞">
+      <div class="prompts-header">
+        <div class="prompts-title-group">
+          <h2 class="prompts-title">📋 Gemini 診斷提示詞（一鍵複製）</h2>
+          <p class="prompts-subtitle">依據您手邊準備上傳至 Gemini 的檔案組合，選擇對應的提示詞並複製貼上</p>
+        </div>
+      </div>
+
+      <div class="prompt-tabs" role="tablist">
+        <button type="button" id="tab-prompt-full" class="prompt-tab active" role="tab" aria-selected="true" aria-controls="prompt-full" data-prompt-target="prompt-full">
+          <span class="tab-badge">完整版</span>
+          <span class="tab-label">含 dumpstate_board.txt + FS/data/anr/</span>
+        </button>
+        <button type="button" id="tab-prompt-board" class="prompt-tab" role="tab" aria-selected="false" aria-controls="prompt-board" data-prompt-target="prompt-board">
+          <span class="tab-badge">進階版</span>
+          <span class="tab-label">含 dumpstate_board.txt</span>
+        </button>
+        <button type="button" id="tab-prompt-single" class="prompt-tab" role="tab" aria-selected="false" aria-controls="prompt-single" data-prompt-target="prompt-single">
+          <span class="tab-badge">標準版</span>
+          <span class="tab-label">僅 gemini_perf_dump.txt</span>
+        </button>
+      </div>
+
+      <!-- 提示詞 1：gemini_perf_dump.txt 搭配 dumpstate_board.txt 與 FS/data/anr/ -->
+      <div id="prompt-full" class="prompt-panel active" role="tabpanel" aria-labelledby="tab-prompt-full">
+        <div class="prompt-files-bar">
+          <span class="files-bar-label">需上傳檔案：</span>
+          <code>gemini_perf_dump.txt</code>
+          <span>+</span>
+          <code>dumpstate_board.txt</code>
+          <span>+</span>
+          <code>FS/data/anr/</code>
+        </div>
+        <div class="prompt-box-wrapper">
+          <pre class="prompt-text" id="text-prompt-full">請根據上傳的 Android Bugreport 核心日誌（gemini_perf_dump.txt、dumpstate_board.txt 與 FS/data/anr/ 追蹤檔），為我進行深度的整機系統效能診斷與流暢度排查：
+1. 列出「核心數據指標儀表板」（無障礙服務、輸入延遲、CPU負載、記憶體/ZRAM飽和度、核心溫度與溫控降頻狀態、掉幀率、ANR 阻塞點等）。
+2. 深入剖析導致手機卡頓、掉幀、無回應（ANR）或耗電的核心病灶（需結合底層硬體板級狀態、ANR 執行緒堆疊追蹤、系統機制原理、日誌數據實證與使用者體感影響）。
+3. 產出分級的 ADB 無 Root 優化執行計畫（包含 AOT 編譯、待機分組管制、非必要組件停用與一鍵復原指令）。</pre>
+          <button type="button" class="btn-copy" data-copy-target="text-prompt-full">
+            <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span class="copy-btn-text">複製提示詞</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 提示詞 2：gemini_perf_dump.txt 搭配 dumpstate_board.txt -->
+      <div id="prompt-board" class="prompt-panel hidden" role="tabpanel" aria-labelledby="tab-prompt-board">
+        <div class="prompt-files-bar">
+          <span class="files-bar-label">需上傳檔案：</span>
+          <code>gemini_perf_dump.txt</code>
+          <span>+</span>
+          <code>dumpstate_board.txt</code>
+        </div>
+        <div class="prompt-box-wrapper">
+          <pre class="prompt-text" id="text-prompt-board">請根據上傳的 Android Bugreport 核心日誌（gemini_perf_dump.txt 與 dumpstate_board.txt），為我進行深度的整機系統效能診斷與流暢度排查：
+1. 列出「核心數據指標儀表板」（無障礙服務、輸入延遲、CPU負載、記憶體/ZRAM飽和度、核心溫度與溫控降頻狀態、板級硬體功耗與掉幀率等）。
+2. 深入剖析導致手機卡頓、掉幀或耗電的核心病灶（需結合系統服務與板級硬體狀態、底層機制原理、日誌數據實證與使用者體感影響）。
+3. 產出分級的 ADB 無 Root 優化執行計畫（包含 AOT 編譯、待機分組管制、非必要組件停用與一鍵復原指令）。</pre>
+          <button type="button" class="btn-copy" data-copy-target="text-prompt-board">
+            <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span class="copy-btn-text">複製提示詞</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 提示詞 3：僅 gemini_perf_dump.txt -->
+      <div id="prompt-single" class="prompt-panel hidden" role="tabpanel" aria-labelledby="tab-prompt-single">
+        <div class="prompt-files-bar">
+          <span class="files-bar-label">需上傳檔案：</span>
+          <code>gemini_perf_dump.txt</code>
+        </div>
+        <div class="prompt-box-wrapper">
+          <pre class="prompt-text" id="text-prompt-single">請根據上傳的 Android Bugreport 核心日誌（gemini_perf_dump.txt），為我進行深度的整機系統效能診斷與流暢度排查：
+1. 列出「核心數據指標儀表板」（無障礙服務、輸入延遲、CPU負載、記憶體/ZRAM飽和度、核心溫度與溫控降頻狀態、掉幀率等）。
+2. 深入剖析導致手機卡頓、掉幀或耗電的核心病灶（需包含底層機制原理、日誌數據實證與使用者體感影響）。
+3. 產出分級的 ADB 無 Root 優化執行計畫（包含 AOT 編譯、待機分組管制、非必要組件停用與一鍵復原指令）。</pre>
+          <button type="button" class="btn-copy" data-copy-target="text-prompt-single">
+            <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span class="copy-btn-text">複製提示詞</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
     <!-- 下游使用指引 -->
     <footer class="app-footer">
       <div class="footer-tip">
-        <strong>💡 下一步：</strong>直接將下載的 <code>gemini_perf_dump.txt</code> 搭配 <code>dumpstate_board.txt</code> 與 <code>FS/data/anr/</code> 檔案拖入 Gemini 聊天介面，即可取得完整效能診斷與優化計畫。
+        <strong>💡 下一步：</strong>將下載的 <code>gemini_perf_dump.txt</code>（可依需求搭配 <code>dumpstate_board.txt</code> 與 <code>FS/data/anr/</code>）拖入 Gemini 聊天介面，並貼上上方對應的提示詞，即可取得完整效能診斷與優化計畫。
       </div>
       <div class="footer-note">
         本工具使用 HTML5 File Streams API 於瀏覽器沙盒即時處理，日誌內容不會離開您的裝置。
